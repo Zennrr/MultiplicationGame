@@ -1,0 +1,226 @@
+<html>
+
+<head>
+    <style>
+        .calculation-container {
+            display: flex;
+            padding-bottom: 20px;
+        }
+
+        .equals-sign {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .app-button {
+            background-color: orange;
+            color: white;
+            border: 5px solid orange;
+            border-radius: 5px;
+            width: 80px;
+        }
+
+        .app-input {
+            width: 50px;
+        }
+
+        #info-text {
+            font-size: 20px;
+        }
+
+        .success {
+            color: green;
+        }
+
+        .error {
+            color: red
+        }
+
+
+        .main-container {
+            width: 300px;
+            background-color: lightgray;
+            padding-right: 20px;
+            padding-left: 20px;
+            padding-top: 5px;
+            padding-bottom: 20px;
+        }
+
+        .inner-main-container {
+            margin: 0 auto;
+            border: 1px solid white;
+            padding: 20px;
+        }
+
+        .main-title {
+            text-align: center;
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <div class="main-container">
+        <h3 class="main-title">
+            Multiplication Game
+        </h3>
+        <div class="inner-main-container">
+            <div class="calculation-container">
+                <div id="first-calculation">2 x 2</div>
+                <div class="equals-sign"> = </div>
+                <input class="app-input" id="first-calculation-input">
+                <div id="first-smile-container"></div>
+            </div>
+
+            <div class="calculation-container">
+                <div id="second-calculation"> 2 x 2</div>
+                <div class="equals-sign"> = </div>
+                <input class="app-input" id="second-calculation-input">
+                <div id="second-smile-container"></div>
+            </div>
+
+            <div class="calculation-container">
+                <div id="third-calculation"> 2 x 2</div>
+                <div class="equals-sign"> = </div>
+                <input class="app-input" id="third-calculation-input">
+                <div id="third-smile-container"></div>
+            </div>
+
+            <div id="info-text">
+
+            </div>
+            <div>
+                <button onclick="onCheckButtonClick()" class="app-button">Check</button>
+                <button onclick="onResetButtonClick()" class="app-button">Reset</button>
+                <button onclick="onShowButtonClick()" class="app-button">Show</button>
+
+            </div>
+        </div>
+
+
+    </div>
+
+
+</body>
+
+
+<script>
+    let firstRandom = []
+    let secondRandom = []
+    let thirdRandom = []
+
+    let firstInput = document.getElementById("first-calculation-input")
+    let secondInput = document.getElementById("second-calculation-input")
+    let thirdInput = document.getElementById("third-calculation-input")
+
+    let firstCalculation = document.getElementById("first-calculation")
+    let secondCalculation = document.getElementById("second-calculation")
+    let thirdCalculation = document.getElementById("third-calculation")
+
+    let firstSmileContainer = document.getElementById("first-smile-container")
+    let secondSmileContainer = document.getElementById("second-smile-container")
+    let thirdSmileContainer = document.getElementById("third-smile-container")
+
+    let infoTextContainer = document.getElementById("info-text")
+
+    const getRandom = () => {
+        return Number.parseInt(Math.random() * 10)
+    }
+
+    const randomizeCalculations = () => {
+        firstRandom = [getRandom(), getRandom()]
+        secondRandom = [getRandom(), getRandom()]
+        thirdRandom = [getRandom(), getRandom()]
+
+        firstCalculation.innerHTML = firstRandom.join(" x ")
+        secondCalculation.innerHTML = secondRandom.join(" x ")
+        thirdCalculation.innerHTML = thirdRandom.join(" x ")
+    }
+
+    const checkAnswerValidity = (numberToCheck, numberArray) => {
+        let parsed = Number.parseInt(numberToCheck)
+        if (!isNaN(parsed)) {
+            return parsed === getRandomNumAnswer(numberArray)
+        }
+        return false
+    }
+
+
+    const getRandomNumAnswer = (numberArray) => {
+        return numberArray[0] * numberArray[1]
+    }
+
+    const addResultSmile = (wasCorrect, smileElement) => {
+        smileElement.classList.remove("success")
+        smileElement.classList.remove("error")
+        if (wasCorrect) {
+            smileElement.innerHTML = ":-)";
+            smileElement.classList.add("success")
+        } else {
+            smileElement.innerHTML = ":-(";
+            smileElement.classList.add("error")
+        }
+
+    }
+
+
+
+    const onCheckButtonClick = () => {
+        let firstResult = firstInput.value
+        let secondResult = secondInput.value
+        let thirdResult = thirdInput.value
+
+        let isFirstValid = checkAnswerValidity(firstResult, firstRandom)
+        addResultSmile(isFirstValid, firstSmileContainer)
+        let isSecondValid = checkAnswerValidity(secondResult, secondRandom)
+        addResultSmile(isSecondValid, secondSmileContainer)
+        let isThirdValid = checkAnswerValidity(thirdResult, thirdRandom)
+        addResultSmile(isThirdValid, thirdSmileContainer)
+
+        let correctCount = [isFirstValid, isSecondValid, isThirdValid].filter(b => b === true).length;
+        infoTextContainer.classList.remove("success")
+        infoTextContainer.classList.remove("error")
+
+        infoTextContainer.innerHTML = correctCount + " / 3 was correct"
+
+        if (correctCount === 3) {
+            infoTextContainer.classList.add("success")
+        } else {
+            infoTextContainer.classList.add("error")
+        }
+
+
+
+    }
+
+
+
+    const onResetButtonClick = () => {
+        randomizeCalculations()
+        firstInput.value = null
+        secondInput.value = null
+        thirdInput.value = null
+        firstSmileContainer.innerHTML = " "
+        secondSmileContainer.innerHTML = " "
+        thirdSmileContainer.innerHTML = " "
+        infoTextContainer.innerHTML = " "
+    }
+
+    const setCorrectValues = (elem, values) => {
+        elem.value = values
+    }
+    const onShowButtonClick = () => {
+        setCorrectValues(firstInput, getRandomNumAnswer(firstRandom))
+        setCorrectValues(secondInput, getRandomNumAnswer(secondRandom))
+        setCorrectValues(thirdInput, getRandomNumAnswer(thirdRandom))
+    }
+
+    randomizeCalculations()
+
+
+</script>
+
+
+
+</html>
